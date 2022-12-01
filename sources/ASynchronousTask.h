@@ -9,8 +9,6 @@
 #include <QThread>
 #include <QWaitCondition>
 
-class Task;
-
 class ASynchronousTask : public QThread
 {
 	Q_OBJECT
@@ -26,6 +24,7 @@ public slots:
 
 protected:
 	void run() override;
+	void job();
 
 signals:
 	void operate(const QString &);
@@ -33,10 +32,8 @@ signals:
 private:
 	// incremental ID for ASynchronousTask objects;
 	static unsigned ID;
-	// Working thread in charge of running the job
-	QThread _workingThread;
-	Task* task;
 
+	bool _shouldStop {false};
 	QMutex _mutex;
 	QWaitCondition _condition;
 };
