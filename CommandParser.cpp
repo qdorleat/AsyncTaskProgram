@@ -52,18 +52,29 @@ void CommandParser::listenToTextCommands()
 			return;
 
 		CommandType commandType = CommandParser::toCommandType(args[0]);
-		processCommand(commandType);
-		qDebug() << "Finished process command";
+
+
+		auto checkId = [](const QString& idStr)
+		{
+			bool castOk;
+			unsigned int val = idStr.toUInt(&castOk, 10);
+			return castOk ? val : -1;
+		};
+
+		int id = -1;
+		if (args.size()>=2)
+			id = checkId(args[1]);
+
+		processCommand(commandType, id);
 	}
 }
 
-void CommandParser::processCommand(CommandType command)
+void CommandParser::processCommand(CommandType command, int id)
 {
 	switch (command)
 	{
 		case START:
 		{
-			std::cout << "START something" << std::endl;
 			_task = new ASynchronousTask();
 			_task->start();
 			break;
@@ -72,11 +83,9 @@ void CommandParser::processCommand(CommandType command)
 			std::cout << "PAUSE something" << std::endl;
 			break;
 		case RESUME:
-			std::cout << "RESUME something" << std::endl;
 			_task->resume();
 			break;
 		case STOP:
-			std::cout << "STOP something" << std::endl;
 			_task->stop();
 			break;
 		case STATUS:
@@ -84,6 +93,7 @@ void CommandParser::processCommand(CommandType command)
 			break;
 		case QUIT:
 			std::cout << "QUIT something" << std::endl;
+			break;
 		default:
 			break;
 	}

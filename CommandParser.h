@@ -18,7 +18,7 @@ public:
 
 	static void listenToTextCommands();
 
-	static void processCommand(CommandType command);
+	static void processCommand(CommandType command, int id);
 
 private:
 	static ASynchronousTask* _task;
