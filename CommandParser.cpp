@@ -73,9 +73,11 @@ void CommandParser::processCommand(CommandType command)
 			break;
 		case RESUME:
 			std::cout << "RESUME something" << std::endl;
+			_task->resume();
 			break;
 		case STOP:
 			std::cout << "STOP something" << std::endl;
+			_task->stop();
 			break;
 		case STATUS:
 			std::cout << "STATUS something" << std::endl;

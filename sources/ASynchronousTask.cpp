@@ -30,8 +30,19 @@ void ASynchronousTask::run()
 	_mutex.unlock();
 }
 
+void ASynchronousTask::stop()
+{
+	qDebug() << "stop task";
+	task->stop();
+}
+
+void ASynchronousTask::resume()
+{
+	qDebug() << "resume task";
+	task->resume();
+}
 
 void ASynchronousTask::handleResults(const QString &)
 {
-	qDebug() << "QDO manage results";
+//	qDebug() << "QDO manage results";
 }

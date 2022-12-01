@@ -32,12 +32,34 @@ void Task::runJob()
 
 	for (long l = 0 ; l < 100000000 ; ++l)
 	{
+		_mutex.lock();
+		if (_shouldStop)
+//			break;
+			_condition.wait(&_mutex);
+		_shouldStop = false;
+		_mutex.unlock();
+
 		std::string outputNumber = std::to_string(l) + " \n";
-		file.write(outputNumber.c_str());
+		if(l%1000 == 0)
+			file.write(outputNumber.c_str());
 //		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	file.close();
 
 	qDebug() << "JOB HAS FINISHED OK";
 	emit resultReady("JOB HAS FINISHED OK");
+}
+
+void Task::stop()
+{
+	_mutex.lock();
+	_shouldStop = true;
+	_mutex.unlock();
+}
+
+void Task::resume()
+{
+	_mutex.lock();
+	_condition.wakeOne();
+	_mutex.unlock();
 }

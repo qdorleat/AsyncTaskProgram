@@ -18,6 +18,9 @@ public:
 	ASynchronousTask();
 	~ASynchronousTask();
 
+	void stop();
+	void resume();
+
 public slots:
 	void handleResults(const QString &);
 
