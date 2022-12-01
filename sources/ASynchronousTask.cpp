@@ -9,8 +9,6 @@
 
 #include <iostream>
 
-unsigned ASynchronousTask::ID = 0;
-
 ASynchronousTask::ASynchronousTask()
 {
 }
@@ -48,9 +46,9 @@ void ASynchronousTask::job()
 	for (long l = 0 ; l < 100000000 ; ++l)
 	{
 		_mutex.lock();
-		if (_shouldStop)
+		if (_shouldPause)
 			_condition.wait(&_mutex);
-		_shouldStop = false;
+		_shouldPause = false;
 		_mutex.unlock();
 
 		std::string outputNumber = std::to_string(l) + " \n";
@@ -64,10 +62,10 @@ void ASynchronousTask::job()
 //	emit resultReady("JOB HAS FINISHED OK");
 }
 
-void ASynchronousTask::stop()
+void ASynchronousTask::pause()
 {
 	_mutex.lock();
-	_shouldStop = true;
+	_shouldPause = true;
 	_mutex.unlock();
 }
 
@@ -77,6 +75,12 @@ void ASynchronousTask::resume()
 	_condition.wakeOne();
 	_mutex.unlock();
 }
+
+void ASynchronousTask::stop()
+{
+	// TODO
+}
+
 
 void ASynchronousTask::handleResults(const QString &)
 {

@@ -6,6 +6,7 @@
 #define ASYNCTASKPROGRAM_COMMANDPARSER_H
 
 #include "CommandType.h"
+#include "sources/ThreadPool.h"
 
 class QString;
 class ASynchronousTask;
@@ -14,14 +15,16 @@ class CommandParser {
 public:
 
 
-	static CommandType toCommandType(const QString& command);
+	CommandType toCommandType(const QString& command);
 
-	static void listenToTextCommands();
+	void listenToTextCommands();
 
-	static void processCommand(CommandType command, int id);
+	void processCommand(CommandType command, int id);
 
 private:
 	static ASynchronousTask* _task;
+
+	ThreadPool _threadManager;
 };
 
 

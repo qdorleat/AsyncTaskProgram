@@ -16,8 +16,9 @@ public:
 	ASynchronousTask();
 	~ASynchronousTask();
 
-	void stop();
+	void pause();
 	void resume();
+	void stop();
 
 public slots:
 	void handleResults(const QString &);
@@ -33,7 +34,7 @@ private:
 	// incremental ID for ASynchronousTask objects;
 	static unsigned ID;
 
-	bool _shouldStop {false};
+	bool _shouldPause{false};
 	QMutex _mutex;
 	QWaitCondition _condition;
 };

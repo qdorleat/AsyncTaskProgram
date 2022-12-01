@@ -6,7 +6,6 @@
 
 #include "sources/ASynchronousTask.h"
 
-#include <QObject>
 #include <QTextStream>
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
@@ -26,7 +25,7 @@ CommandType CommandParser::toCommandType(const QString& command)
 		return CommandType::PAUSE;
 	if (command == "resume")
 		return CommandType::RESUME;
-	if (command == "stop")
+	if (command == "pause")
 		return CommandType::STOP;
 	if (command == "status")
 		return CommandType::STATUS;
@@ -74,19 +73,16 @@ void CommandParser::processCommand(CommandType command, int id)
 	switch (command)
 	{
 		case START:
-		{
-			_task = new ASynchronousTask();
-			_task->start();
+			_threadManager.createTask();
 			break;
-		}
 		case PAUSE:
-			std::cout << "PAUSE something" << std::endl;
+			_threadManager.pause(id);
 			break;
 		case RESUME:
-			_task->resume();
+			_threadManager.resume(id);
 			break;
 		case STOP:
-			_task->stop();
+			_threadManager.stop(id);
 			break;
 		case STATUS:
 			std::cout << "STATUS something" << std::endl;
