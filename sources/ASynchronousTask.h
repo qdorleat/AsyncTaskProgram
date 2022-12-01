@@ -5,23 +5,24 @@
 #ifndef ASYNCTASKPROGRAM_ASYNCHRONOUSTASK_H
 #define ASYNCTASKPROGRAM_ASYNCHRONOUSTASK_H
 
+#include <QMutex>
 #include <QThread>
+#include <QWaitCondition>
 
 class Task;
 
-class ASynchronousTask : public QObject
+class ASynchronousTask : public QThread
 {
 	Q_OBJECT
 public:
 	ASynchronousTask();
 	~ASynchronousTask();
 
-	void start();
-	void pause();
-	void stop();
-
 public slots:
 	void handleResults(const QString &);
+
+protected:
+	void run() override;
 
 signals:
 	void operate(const QString &);
@@ -32,6 +33,9 @@ private:
 	// Working thread in charge of running the job
 	QThread _workingThread;
 	Task* task;
+
+	QMutex _mutex;
+	QWaitCondition _condition;
 };
 
 #endif //ASYNCTASKPROGRAM_ASYNCHRONOUSTASK_H

@@ -5,15 +5,15 @@
 #include "CommandParser.h"
 
 #include "sources/ASynchronousTask.h"
-#include "sources/TestToRemove.h"
 
 #include <QObject>
 #include <QTextStream>
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
-#include <QThread>
 
 #include <iostream>
+
+ASynchronousTask* CommandParser::_task = nullptr;
 
 CommandType CommandParser::toCommandType(const QString& command)
 {
@@ -64,10 +64,8 @@ void CommandParser::processCommand(CommandType command)
 		case START:
 		{
 			std::cout << "START something" << std::endl;
-			ASynchronousTask task;
-			task.start();
-//			Controller* controller = new Controller;
-//			controller->operate("toto");
+			_task = new ASynchronousTask();
+			_task->start();
 			break;
 		}
 		case PAUSE:

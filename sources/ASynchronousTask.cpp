@@ -7,42 +7,29 @@
 #include "Task.h"
 
 #include <QDebug>
+
 #include <iostream>
 
 unsigned ASynchronousTask::ID = 0;
 
 ASynchronousTask::ASynchronousTask()
 {
-	task = new Task;
-	task->moveToThread(&_workingThread);
-
-	connect(&_workingThread, &QThread::finished, task, &QObject::deleteLater);
-	connect(this, &ASynchronousTask::operate, task, &Task::runJob);
-	connect(task, &Task::resultReady, this, &ASynchronousTask::handleResults);
-	_workingThread.start();
-
-	qDebug() << "Command started";
 }
 
 ASynchronousTask::~ASynchronousTask()
 {
-	_workingThread.quit();
-	_workingThread.wait();
 }
 
-void ASynchronousTask::start()
+void ASynchronousTask::run()
 {
-	qDebug() << __PRETTY_FUNCTION__;
+	qDebug() << "Async _task begins to run";
+	_mutex.lock();
+	task = new Task;
 	task->runJob();
+	_condition.wait(&_mutex);
+	_mutex.unlock();
 }
 
-void ASynchronousTask::pause()
-{
-}
-
-void ASynchronousTask::stop()
-{
-}
 
 void ASynchronousTask::handleResults(const QString &)
 {

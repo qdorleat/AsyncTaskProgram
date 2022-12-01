@@ -8,6 +8,7 @@
 #include "CommandType.h"
 
 class QString;
+class ASynchronousTask;
 
 class CommandParser {
 public:
@@ -18,6 +19,9 @@ public:
 	static void listenToTextCommands();
 
 	static void processCommand(CommandType command);
+
+private:
+	static ASynchronousTask* _task;
 };
 
 
