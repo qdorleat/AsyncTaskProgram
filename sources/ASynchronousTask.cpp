@@ -35,12 +35,22 @@ void ASynchronousTask::job()
 		return;
 	}
 
-	for (long l = 0 ; l < 1000000000 ; ++l)
+	_mutex.lock();
+	_state = State::RUNNING;
+	_mutex.unlock();
+
+	for (long l = 0 ; l < 100000000 ; ++l)
 	{
 		_mutex.lock();
-		if (_shouldPause)
+		if (_state == PAUSED)
+		{
 			_condition.wait(&_mutex);
-		_shouldPause = false;
+		}
+		if (_state == STOPPED)
+		{
+			_mutex.unlock();
+			break;
+		}
 		_mutex.unlock();
 
 		std::string outputNumber = std::to_string(l) + " \n";
@@ -49,24 +59,88 @@ void ASynchronousTask::job()
 	}
 	file.close();
 
-	qInfo() << "Task " << _id << "just finished";
+	// Only if job finished by itself
+	if (_state == RUNNING)
+	{
+		_state = State::COMPLETED;
+		qInfo() << "Task " << _id << "just completed.";
+	}
 }
 
 void ASynchronousTask::pause()
 {
 	_mutex.lock();
-	_shouldPause = true;
+	switch(_state)
+	{
+		case(State::RUNNING) :
+		{
+			// Will request the task to pause at next iteration in the job
+			_state = State::PAUSED;
+			qInfo() << "Pausing task " << _id;
+			break;
+		}
+		case(State::PAUSED) :
+		case(State::STOPPED) :
+		case(State::COMPLETED) :
+		default:
+		{
+			qWarning() << "Can't pause any paused, stopped or completed task " << _id;
+			break;
+		}
+	}
 	_mutex.unlock();
 }
 
 void ASynchronousTask::resume()
 {
 	_mutex.lock();
-	_condition.wakeOne();
+
+	switch(_state)
+	{
+		case(State::PAUSED) :
+		{
+			_state = State::RUNNING;
+			qInfo() << "Resuming task " << _id;
+			// wake up the task
+			_condition.wakeOne();
+			break;
+		}
+		case(State::RUNNING) :
+		case(State::STOPPED) :
+		case(State::COMPLETED) :
+		default:
+		{
+			qWarning() << "Can't resume any running, stopped or completed task " << _id;
+			break;
+		}
+	}
+
 	_mutex.unlock();
 }
 
 void ASynchronousTask::stop()
 {
-	// TODO
+	_mutex.lock();
+
+	switch(_state)
+	{
+		case(State::PAUSED) :
+		case(State::RUNNING) :
+		{
+			_state = State::STOPPED;
+			qInfo() << "Stopping task " << _id;
+			// wake up the task
+			_condition.wakeOne();
+			break;
+		}
+		case(State::STOPPED) :
+		case(State::COMPLETED) :
+		default:
+		{
+			qWarning() << "Can't stop any stopped or completed task " << _id;
+			break;
+		}
+	}
+
+	_mutex.unlock();
 }

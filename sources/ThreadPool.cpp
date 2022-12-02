@@ -33,7 +33,6 @@ void ThreadPool::pause(unsigned id)
 {
 	if (_async_threads.contains(id))
 	{
-		qInfo() << "Pausing task " << id;
 		_async_threads[id]->pause();
 	}
 	else
@@ -46,7 +45,6 @@ void ThreadPool::resume(unsigned id)
 {
 	if (_async_threads.contains(id))
 	{
-		qInfo() << "Resuming task " << id;
 		_async_threads[id]->resume();
 	}
 	else
@@ -59,7 +57,6 @@ void ThreadPool::stop(unsigned id)
 {
 	if (_async_threads.contains(id))
 	{
-		qInfo() << "Stoping task " << id;
 		_async_threads[id]->stop();
 	}
 	else

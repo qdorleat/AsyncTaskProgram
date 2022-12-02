@@ -23,7 +23,7 @@ CommandType CommandParser::toCommandType(const QString& command)
 		return CommandType::PAUSE;
 	if (command == "resume")
 		return CommandType::RESUME;
-	if (command == "pause")
+	if (command == "stop")
 		return CommandType::STOP;
 	if (command == "status")
 		return CommandType::STATUS;

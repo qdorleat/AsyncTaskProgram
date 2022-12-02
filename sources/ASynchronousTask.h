@@ -9,6 +9,15 @@
 #include <QThread>
 #include <QWaitCondition>
 
+enum State
+{
+	UNINITIALIZED,
+	RUNNING,
+	PAUSED,
+	STOPPED,
+	COMPLETED
+};
+
 class ASynchronousTask : public QThread
 {
 	Q_OBJECT
@@ -29,9 +38,10 @@ protected:
 private:
 	const unsigned _id;
 
-	bool _shouldPause{false};
 	QMutex _mutex;
 	QWaitCondition _condition;
+
+	State _state {State::UNINITIALIZED};
 };
 
 #endif //ASYNCTASKPROGRAM_ASYNCHRONOUSTASK_H
