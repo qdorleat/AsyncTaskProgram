@@ -9,7 +9,8 @@
 
 #include <iostream>
 
-ASynchronousTask::ASynchronousTask()
+ASynchronousTask::ASynchronousTask(unsigned id)
+: _id(id)
 {
 }
 
@@ -19,31 +20,23 @@ ASynchronousTask::~ASynchronousTask()
 
 void ASynchronousTask::run()
 {
-	qDebug() << "Async _task begins to run";
 	job();
 	_condition.wait(&_mutex);
 }
 
 void ASynchronousTask::job()
 {
-	qDebug() << "Job starts running";
-
 	/// JOB 1
-	QString sourcePath = "../resources/jobs/job1.txt";
+	QString sourcePath = "../resources/jobs/job"+QString::number(_id)+".txt";
 	QFile file(sourcePath);
-	if (!file.exists())
+	// Following will work in both case file exist or not.
+	if (!file.open(QIODevice::WriteOnly))
 	{
-		qWarning() << "Read failed as file does not exist, path" << sourcePath;
+		qWarning() << "Cannot create file " << sourcePath << file.errorString() << ", please check your Write permissions";
 		return;
 	}
 
-	if (!file.open(QFile::OpenModeFlag::ReadWrite))
-	{
-		qWarning() << "Read" << sourcePath << "failed" << file.errorString();
-		return;
-	}
-
-	for (long l = 0 ; l < 100000000 ; ++l)
+	for (long l = 0 ; l < 1000000000 ; ++l)
 	{
 		_mutex.lock();
 		if (_shouldPause)
@@ -52,9 +45,9 @@ void ASynchronousTask::job()
 		_mutex.unlock();
 
 		std::string outputNumber = std::to_string(l) + " \n";
-		if(l%1000 == 0)
+		if(l%100000 == 0)
 			file.write(outputNumber.c_str());
-		//		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+//		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	file.close();
 
