@@ -1,0 +1,19 @@
+//
+// Created by qdorleat on 29.11.22.
+//
+
+#ifndef ASYNCTASKPROGRAM_COMMANDTYPE_H
+#define ASYNCTASKPROGRAM_COMMANDTYPE_H
+
+enum CommandType
+{
+	START,
+	PAUSE,
+	RESUME,
+	STOP,
+	STATUS,
+	QUIT,
+	NONE = -1
+};
+
+#endif//ASYNCTASKPROGRAM_COMMANDTYPE_H
