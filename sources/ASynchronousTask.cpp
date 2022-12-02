@@ -26,8 +26,7 @@ void ASynchronousTask::run()
 
 void ASynchronousTask::job()
 {
-	/// JOB 1
-	QString sourcePath = "../resources/jobs/job"+QString::number(_id)+".txt";
+	QString sourcePath = "./job"+QString::number(_id)+".txt";
 	QFile file(sourcePath);
 	// Following will work in both case file exist or not.
 	if (!file.open(QIODevice::WriteOnly))
@@ -47,12 +46,10 @@ void ASynchronousTask::job()
 		std::string outputNumber = std::to_string(l) + " \n";
 		if(l%100000 == 0)
 			file.write(outputNumber.c_str());
-//		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	file.close();
 
-	qDebug() << "JOB HAS FINISHED OK";
-//	emit resultReady("JOB HAS FINISHED OK");
+	qInfo() << "Task " << _id << "just finished";
 }
 
 void ASynchronousTask::pause()
@@ -72,10 +69,4 @@ void ASynchronousTask::resume()
 void ASynchronousTask::stop()
 {
 	// TODO
-}
-
-
-void ASynchronousTask::handleResults(const QString &)
-{
-//	qDebug() << "QDO manage results";
 }

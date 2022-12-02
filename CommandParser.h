@@ -8,12 +8,12 @@
 #include "CommandType.h"
 #include "sources/ThreadPool.h"
 
-class QString;
 class ASynchronousTask;
+class QString;
 
-class CommandParser {
+class CommandParser
+{
 public:
-
 
 	CommandType toCommandType(const QString& command);
 

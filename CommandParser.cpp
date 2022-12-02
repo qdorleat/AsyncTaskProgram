@@ -12,8 +12,6 @@
 
 #include <iostream>
 
-ASynchronousTask* CommandParser::_task = nullptr;
-
 CommandType CommandParser::toCommandType(const QString& command)
 {
 	if (command.isNull() || command.isEmpty())

@@ -24,15 +24,10 @@ set(_headers
     sources/ThreadPool.h
 )
 
-set(_resources
-    resources/jobs/jobs.qrc
-)
-
 add_executable(AsyncTaskProgram
     main.cpp
     ${_sources}
     ${_headers}
-    ${_resources}
 )
 
 target_include_directories(

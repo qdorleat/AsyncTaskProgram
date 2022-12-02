@@ -22,20 +22,11 @@ public:
 	void resume();
 	void stop();
 
-public slots:
-	void handleResults(const QString &);
-
 protected:
 	void run() override;
 	void job();
 
-signals:
-	void operate(const QString &);
-
 private:
-	// incremental ID for ASynchronousTask objects;
-	static unsigned ID;
-
 	const unsigned _id;
 
 	bool _shouldPause{false};
