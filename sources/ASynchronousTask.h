@@ -13,7 +13,9 @@ class ASynchronousTask : public QThread
 {
 	Q_OBJECT
 public:
-	ASynchronousTask();
+	ASynchronousTask(unsigned id);
+	ASynchronousTask() = delete;
+	ASynchronousTask(const ASynchronousTask& ) = delete;
 	~ASynchronousTask();
 
 	void pause();
@@ -33,6 +35,8 @@ signals:
 private:
 	// incremental ID for ASynchronousTask objects;
 	static unsigned ID;
+
+	const unsigned _id;
 
 	bool _shouldPause{false};
 	QMutex _mutex;
