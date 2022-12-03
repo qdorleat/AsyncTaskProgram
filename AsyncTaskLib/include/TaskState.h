@@ -1,0 +1,8 @@
+//
+// Created by qdorleat on 03.12.22.
+//
+
+#ifndef ASYNCTASKPROGRAM_TASKSTATE_H
+#define ASYNCTASKPROGRAM_TASKSTATE_H
+
+#endif//ASYNCTASKPROGRAM_TASKSTATE_H
