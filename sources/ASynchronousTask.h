@@ -9,17 +9,10 @@
 #include <QThread>
 #include <QWaitCondition>
 
-enum State
-{
-	UNINITIALIZED,
-	RUNNING,
-	PAUSED,
-	STOPPED,
-	COMPLETED
-};
+#include "TaskStateMachine.h"
 
-
-class ASynchronousTask : public QThread
+class ASynchronousTask : public QThread,
+                         public TaskStateMachine
 {
 	Q_OBJECT
 public:
@@ -36,9 +29,6 @@ protected:
 	void run() override;
 	void job();
 
-	bool isTransitionAllowed(State from, State to);
-	void transition(State desiredState, std::function<void()> const& callBack);
-
 private:
 	const unsigned _id;
 
@@ -46,7 +36,6 @@ private:
 	QWaitCondition _condition;
 
 	State _state {State::UNINITIALIZED};
-	static QMap<State, QSet<State>> transitions;
 };
 
 #endif //ASYNCTASKPROGRAM_ASYNCHRONOUSTASK_H

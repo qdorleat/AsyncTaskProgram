@@ -14,6 +14,7 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent)
 set(_sources
     CommandParser.cpp
     sources/ASynchronousTask.cpp
+    sources/TaskStateMachine.cpp
     sources/ThreadPool.cpp
 )
 
@@ -21,6 +22,7 @@ set(_headers
     CommandParser.h
     CommandType.h
     sources/ASynchronousTask.h
+    sources/TaskStateMachine.h
     sources/ThreadPool.h
 )
 

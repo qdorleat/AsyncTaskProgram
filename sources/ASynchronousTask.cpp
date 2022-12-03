@@ -10,40 +10,6 @@
 #include <iostream>
 
 
-QMap<State, QSet<State>> ASynchronousTask::transitions {
-	{UNINITIALIZED, {RUNNING}},
-	{RUNNING, {PAUSED, STOPPED, COMPLETED}},
-	{PAUSED, {RUNNING, STOPPED}},
-	{STOPPED, {}},
-	{COMPLETED, {}},
-};
-
-bool ASynchronousTask::isTransitionAllowed(State from, State to)
-{
-	if (!transitions.contains(from))
-	{
-		return false;
-	}
-	return transitions[from].contains(to);
-}
-
-void ASynchronousTask::transition(State desiredState, std::function<void()> const& callBack)
-{
-	_mutex.lock();
-
-	bool stateTransitionPossible = isTransitionAllowed(_state, desiredState);
-	if (stateTransitionPossible)
-	{
-		// Execute the callback of state change
-		callBack();
-	}
-	else
-	{
-		qWarning() << "Not allowed for the task" << _id << "to leave state" << _state << "to state" << desiredState;
-	}
-	_mutex.unlock();
-}
-
 ASynchronousTask::ASynchronousTask(unsigned id)
 : _id(id)
 {
@@ -111,7 +77,10 @@ void ASynchronousTask::pause()
 		_state = State::PAUSED;
 		qInfo() << "Pausing task " << _id;
 	};
-	transition(State::PAUSED, actionPause);
+
+	_mutex.lock();
+	transition(_state, State::PAUSED, actionPause);
+	_mutex.unlock();
 }
 
 void ASynchronousTask::resume()
@@ -123,7 +92,10 @@ void ASynchronousTask::resume()
 		// wake up the task
 		_condition.wakeOne();
 	};
-	transition(State::RUNNING, actionResume);
+
+	_mutex.lock();
+	transition(_state, State::RUNNING, actionResume);
+	_mutex.unlock();
 }
 
 void ASynchronousTask::stop()
@@ -135,5 +107,8 @@ void ASynchronousTask::stop()
 		// wake up the task
 		_condition.wakeOne();
 	};
-	transition(State::STOPPED, actionStop);
+
+	_mutex.lock();
+	transition(_state, State::STOPPED, actionStop);
+	_mutex.unlock();
 }
