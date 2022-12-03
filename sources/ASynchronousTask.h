@@ -18,6 +18,7 @@ enum State
 	COMPLETED
 };
 
+
 class ASynchronousTask : public QThread
 {
 	Q_OBJECT
@@ -35,6 +36,9 @@ protected:
 	void run() override;
 	void job();
 
+	bool isTransitionAllowed(State from, State to);
+	void transition(State desiredState, std::function<void()> const& callBack);
+
 private:
 	const unsigned _id;
 
@@ -42,6 +46,7 @@ private:
 	QWaitCondition _condition;
 
 	State _state {State::UNINITIALIZED};
+	static QMap<State, QSet<State>> transitions;
 };
 
 #endif //ASYNCTASKPROGRAM_ASYNCHRONOUSTASK_H

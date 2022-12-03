@@ -9,6 +9,41 @@
 
 #include <iostream>
 
+
+QMap<State, QSet<State>> ASynchronousTask::transitions {
+	{UNINITIALIZED, {RUNNING}},
+	{RUNNING, {PAUSED, STOPPED, COMPLETED}},
+	{PAUSED, {RUNNING, STOPPED}},
+	{STOPPED, {}},
+	{COMPLETED, {}},
+};
+
+bool ASynchronousTask::isTransitionAllowed(State from, State to)
+{
+	if (!transitions.contains(from))
+	{
+		return false;
+	}
+	return transitions[from].contains(to);
+}
+
+void ASynchronousTask::transition(State desiredState, std::function<void()> const& callBack)
+{
+	_mutex.lock();
+
+	bool stateTransitionPossible = isTransitionAllowed(_state, desiredState);
+	if (stateTransitionPossible)
+	{
+		// Execute the callback of state change
+		callBack();
+	}
+	else
+	{
+		qWarning() << "Not allowed for the task" << _id << "to leave state" << _state << "to state" << desiredState;
+	}
+	_mutex.unlock();
+}
+
 ASynchronousTask::ASynchronousTask(unsigned id)
 : _id(id)
 {
@@ -49,6 +84,7 @@ void ASynchronousTask::job()
 		if (_state == STOPPED)
 		{
 			_mutex.unlock();
+			// Leave the loop so as to stop the task
 			break;
 		}
 		_mutex.unlock();
@@ -69,78 +105,35 @@ void ASynchronousTask::job()
 
 void ASynchronousTask::pause()
 {
-	_mutex.lock();
-	switch(_state)
+	auto actionPause = [&]()
 	{
-		case(State::RUNNING) :
-		{
-			// Will request the task to pause at next iteration in the job
-			_state = State::PAUSED;
-			qInfo() << "Pausing task " << _id;
-			break;
-		}
-		case(State::PAUSED) :
-		case(State::STOPPED) :
-		case(State::COMPLETED) :
-		default:
-		{
-			qWarning() << "Can't pause any paused, stopped or completed task " << _id;
-			break;
-		}
-	}
-	_mutex.unlock();
+		// Will request the task to pause at next iteration in the job
+		_state = State::PAUSED;
+		qInfo() << "Pausing task " << _id;
+	};
+	transition(State::PAUSED, actionPause);
 }
 
 void ASynchronousTask::resume()
 {
-	_mutex.lock();
-
-	switch(_state)
+	auto actionResume = [&]()
 	{
-		case(State::PAUSED) :
-		{
-			_state = State::RUNNING;
-			qInfo() << "Resuming task " << _id;
-			// wake up the task
-			_condition.wakeOne();
-			break;
-		}
-		case(State::RUNNING) :
-		case(State::STOPPED) :
-		case(State::COMPLETED) :
-		default:
-		{
-			qWarning() << "Can't resume any running, stopped or completed task " << _id;
-			break;
-		}
-	}
-
-	_mutex.unlock();
+		_state = State::RUNNING;
+		qInfo() << "Resuming task " << _id;
+		// wake up the task
+		_condition.wakeOne();
+	};
+	transition(State::RUNNING, actionResume);
 }
 
 void ASynchronousTask::stop()
 {
-	_mutex.lock();
-
-	switch(_state)
+	auto actionStop = [&]()
 	{
-		case(State::PAUSED) :
-		case(State::RUNNING) :
-		{
-			_state = State::STOPPED;
-			qInfo() << "Stopping task " << _id;
-			// wake up the task
-			_condition.wakeOne();
-			break;
-		}
-		case(State::STOPPED) :
-		case(State::COMPLETED) :
-		default:
-		{
-			qWarning() << "Can't stop any stopped or completed task " << _id;
-			break;
-		}
-	}
-
-	_mutex.unlock();
+		_state = State::STOPPED;
+		qInfo() << "Stopping task " << _id;
+		// wake up the task
+		_condition.wakeOne();
+	};
+	transition(State::STOPPED, actionStop);
 }
