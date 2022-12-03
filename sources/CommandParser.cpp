@@ -4,7 +4,7 @@
 
 #include "CommandParser.h"
 
-#include "sources/ASynchronousTask.h"
+#include <ASynchronousTask.h>
 
 #include <QTextStream>
 #include <QString>

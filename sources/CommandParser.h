@@ -6,7 +6,7 @@
 #define ASYNCTASKPROGRAM_COMMANDPARSER_H
 
 #include "CommandType.h"
-#include "sources/ThreadPool.h"
+#include <ThreadPool.h>
 
 class ASynchronousTask;
 class QString;

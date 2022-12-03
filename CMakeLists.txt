@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.22)
 
 set(PROJECT_NAME AsyncTaskProgram)
 
@@ -12,19 +12,15 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent)
 
+add_subdirectory(AsyncTaskLib)
+
 set(_sources
-    CommandParser.cpp
-    sources/ASynchronousTask.cpp
-    sources/TaskStateMachine.cpp
-    sources/ThreadPool.cpp
+    sources/CommandParser.cpp
 )
 
 set(_headers
-    CommandParser.h
-    CommandType.h
-    sources/ASynchronousTask.h
-    sources/TaskStateMachine.h
-    sources/ThreadPool.h
+    sources/CommandParser.h
+    sources/CommandType.h
 )
 
 add_executable(AsyncTaskProgram
@@ -37,6 +33,7 @@ target_include_directories(
         ${PROJECT_NAME} PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${ARG_INCLUDE_DIR}>"	# For build-tree
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>	# For install-tree
+        AsyncTaskLib/include
 )
 
 target_link_libraries(AsyncTaskProgram PUBLIC
@@ -44,4 +41,5 @@ target_link_libraries(AsyncTaskProgram PUBLIC
     Qt5::Concurrent
     Qt5::Gui
     Qt5::Widgets
+    AsyncTaskLib
 )
