@@ -8,6 +8,7 @@ project(${PROJECT_NAME}
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent)
 
