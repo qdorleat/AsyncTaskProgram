@@ -4,7 +4,7 @@
 #include <QCommandLineParser>
 #include <QStringList>
 
-#include "CommandParser.h"
+#include "sources/CommandParser.h"
 
 void processArgs(const QStringList& arguments)
 {
