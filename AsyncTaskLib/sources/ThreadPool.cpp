@@ -5,19 +5,25 @@
 #include "ThreadPool.h"
 
 #include "Definitions.h"
-#include "ASynchronousTask.h"
+#include "ASynchronousTaskAlgoA.h"
+#include "ASynchronousTaskAlgoB.h"
 
 #include <QDebug>
 
 unsigned ThreadPool::ID = 0;
 
-unsigned ThreadPool::createTask()
+unsigned ThreadPool::createTask(TaskType type)
 {
 	unsigned idNewAsyncTask = ID;
 
 	if (!_async_threads.contains(idNewAsyncTask))
 	{
-		ASynchronousTask* task = new ASynchronousTask(idNewAsyncTask);
+		ASynchronousTask* task;
+		if (type == TaskType::A)
+			task = new ASyncTaskA(idNewAsyncTask);
+		else
+			task = new ASyncTaskB(idNewAsyncTask);
+
 		qInfo() << "Starting task " << idNewAsyncTask;
 		task->start();
 		_async_threads[idNewAsyncTask] = task;
@@ -60,8 +66,9 @@ void ThreadPool::printStatus(unsigned id)
 	if (_async_threads.contains(id))
 	{
 		qInfo() << "Task: ID " << id
-		        << "Status:" << TaskStateMachine::toString(_async_threads[id]->status())
-		        << "Progress:" << _async_threads[id]->progress() << "%";
+				<< "Type:" << QString::number(static_cast<unsigned int>(_async_threads[id]->type()))
+				<< "Status:" << TaskStateMachine::toString(_async_threads[id]->status())
+				<< "Progress:" << _async_threads[id]->progress() << "%";
 	}
 	else
 	{

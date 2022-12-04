@@ -20,22 +20,22 @@ ASynchronousTask::~ASynchronousTask()
 {
 }
 
-void ASynchronousTask::run()
-{
-	job();
-//	_condition.wait(&_mutex);
-}
-
-void ASynchronousTask::job()
+bool ASynchronousTask::setup()
 {
 	QString sourcePath = "./job"+QString::number(_id)+".txt";
-	QFile file(sourcePath);
+	_file.setFileName(sourcePath);
 	// Following will work in both case file exist or not.
-	if (!file.open(QIODevice::WriteOnly))
+	if (!_file.open(QIODevice::WriteOnly))
 	{
-		qWarning() << "Cannot create file " << sourcePath << file.errorString() << ", please check your Write permissions";
-		return;
+		qWarning() << "Cannot create file " << sourcePath << _file.errorString() << ", please check your Write permissions";
+		return false;
 	}
+	return true;
+}
+
+void ASynchronousTask::run()
+{
+	setup();
 
 	_mutex.lock();
 	_state = State::RUNNING;
@@ -60,10 +60,10 @@ void ASynchronousTask::job()
 
 		std::string outputNumber = std::to_string(l) + " \n";
 		if(l%100000 == 0)
-			file.write(outputNumber.c_str());
+			job();
 
 	}
-	file.close();
+	_file.close();
 
 	// Only if job finished by itself
 	if (_state == RUNNING)

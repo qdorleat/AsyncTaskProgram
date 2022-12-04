@@ -8,7 +8,16 @@
 class ASynchronousTaskTest : public ASynchronousTask
 {
 public:
-	ASynchronousTaskTest(unsigned id) : ASynchronousTask(id) {}
+	ASynchronousTaskTest(unsigned id) : ASynchronousTask(id) {};
+
+	TaskType type()
+	{
+		return TaskType::A;
+	}
+	void job()
+	{
+		_file.write("Test");
+	}
 };
 
 TEST(ASynchronousTaskTest, transitions)
