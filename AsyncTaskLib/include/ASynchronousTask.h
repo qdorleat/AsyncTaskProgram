@@ -11,6 +11,11 @@
 
 #include "TaskStateMachine.h"
 
+/**
+ * The ASynchronousTask is a abstract class that allows to create an asynchronous task.
+ * It exposes basic functionalities that allow the user to pause, resume or stop a task.
+ * The class has a State and holds a state machine that allows to transit from states to others.
+ */
 class ASynchronousTask : public QThread,
                          public TaskStateMachine
 {
