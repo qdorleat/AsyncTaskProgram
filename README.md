@@ -37,6 +37,21 @@ Run the program help, by running:
 ./AsyncTaskProgram --help
 ```
 
+### commands
+
+Please pay attention to task_type_id that should be `42` or `666`
+
+```
+"start                 starts a task of type 42 and prints its ID\n"
+"start  <task_type_id> starts a task of a given type among [42, 666] and and prints its ID \n"
+"pause  <task_id>      pause the task with the given id and print a confirmation message\n"
+"resume <task_id>      resume task with the given id (if paused) and print a confirmation message\n"
+"stop   <task_id>      stop the task with the given id (if not stopped) and print a confirmation message \n"
+"status                prints the id, the status, an indicator of progress for each task. and the task type ID.\n"
+"status <task_id>      As above, but for a single task.\n"
+"quit                  gracefully shut down"
+```
+
 ## Requirements
 
 - Cmake version 3.22 is required. If you don't have it, replace the minimum cmake requirement in CMakeLists.txt files and cross your fingers :)
