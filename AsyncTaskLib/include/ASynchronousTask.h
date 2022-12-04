@@ -25,6 +25,10 @@ public:
 	void resume();
 	void stop();
 
+	// Returns the state of the task.
+	// Since the status is protected by a mutex, the getter cannot be const method
+	State status();
+
 protected:
 	void run() override;
 	void job();

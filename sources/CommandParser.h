@@ -19,7 +19,7 @@ public:
 
 	void listenToTextCommands();
 
-	void processCommand(CommandType command, int id);
+	void processCommand(CommandType command, QString id = "");
 
 private:
 	static ASynchronousTask* _task;

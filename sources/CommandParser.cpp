@@ -50,24 +50,38 @@ void CommandParser::listenToTextCommands()
 
 		CommandType commandType = CommandParser::toCommandType(args[0]);
 
-
-		auto checkId = [](const QString& idStr)
-		{
-			bool castOk;
-			unsigned int val = idStr.toUInt(&castOk, 10);
-			return castOk ? val : -1;
-		};
-
-		int id = -1;
+		QString id = "";
 		if (args.size()>=2)
-			id = checkId(args[1]);
+			id = args[1];
 
 		processCommand(commandType, id);
 	}
 }
 
-void CommandParser::processCommand(CommandType command, int id)
+void CommandParser::processCommand(CommandType command, QString idStr /* = "" */)
 {
+	if (idStr == "" && (command == PAUSE || command == RESUME || command == STOP))
+	{
+		qWarning() << "Please provide an ID";
+		return;
+	}
+
+	auto checkId = [](const QString& idStr)
+	{
+		bool castOk;
+		unsigned int val = idStr.toUInt(&castOk, 10);
+		return castOk ? val : -1;
+	};
+	int id = checkId(idStr);
+
+	if (command != START &&
+		command != STATUS &&
+		id == -1)
+	{
+		qWarning() << "Please provide a correct ID";
+		return;
+	}
+
 	switch (command)
 	{
 		case START:
@@ -83,7 +97,7 @@ void CommandParser::processCommand(CommandType command, int id)
 			_threadManager.stop(id);
 			break;
 		case STATUS:
-			std::cout << "STATUS something" << std::endl;
+			_threadManager.printStatus(id);
 			break;
 		case QUIT:
 			std::cout << "QUIT something" << std::endl;

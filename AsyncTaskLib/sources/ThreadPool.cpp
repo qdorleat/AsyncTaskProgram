@@ -29,6 +29,11 @@ unsigned ThreadPool::createTask()
 	return -1;
 }
 
+bool ThreadPool::contains(unsigned id)
+{
+	return _async_threads.contains(id);
+}
+
 void ThreadPool::pause(unsigned id)
 {
 	if (_async_threads.contains(id))
@@ -37,7 +42,27 @@ void ThreadPool::pause(unsigned id)
 	}
 	else
 	{
-		qWarning() << "The map does not contain the task with the ID " << id;
+		qWarning() << "There is no task with the given ID" << id;
+	}
+}
+
+void ThreadPool::printStatus(unsigned id)
+{
+	// Print All task
+	if (id == -1)
+	{
+		for (auto const id : _async_threads.keys())
+			printStatus(id);
+			return;
+	}
+	if (_async_threads.contains(id))
+	{
+		qInfo() << "Task: ID " << id
+		        << "Status:" << TaskStateMachine::toString(_async_threads[id]->status());
+	}
+	else
+	{
+		qWarning() << "There is no task with the given ID" << id;
 	}
 }
 
@@ -49,7 +74,7 @@ void ThreadPool::resume(unsigned id)
 	}
 	else
 	{
-		qWarning() << "The map does not contain the task with the ID " << id;
+		qWarning() << "There is no task with the given ID" << id;
 	}
 }
 
@@ -61,6 +86,6 @@ void ThreadPool::stop(unsigned id)
 	}
 	else
 	{
-		qWarning() << "The map does not contain the task with the ID " << id;
+		qWarning() << "There is no task with the given ID" << id;
 	}
 }

@@ -12,8 +12,10 @@ class ASynchronousTask;
 class ThreadPool
 {
 public:
+	bool contains(unsigned id);
 	unsigned createTask();
 	void pause(unsigned id);
+	void printStatus(unsigned id = -1);
 	void resume(unsigned id);
 	void stop(unsigned id);
 

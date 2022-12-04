@@ -5,24 +5,19 @@
 #ifndef ASYNCTASKPROGRAM_TASKSTATEMACHINE_H
 #define ASYNCTASKPROGRAM_TASKSTATEMACHINE_H
 
+#include "TaskState.h"
 #include <QMap>
 #include <functional>
 
-enum State
-{
-	UNINITIALIZED,
-	RUNNING,
-	PAUSED,
-	STOPPED,
-	COMPLETED,
-};
-
 class TaskStateMachine
 {
+public:
+	//! Returns a stringified version of the state
+	static QString toString(State state);
 protected:
-
-	QString toString(State);
+	//! Returns true whether the transition is allowd from state 'from' to state 'to'
 	bool isTransitionAllowed(State from, State to);
+	//! Performs the transition if allowed from 'currentState' to 'desiredState' by calling the callback
 	void transition(State currentState, State desiredState, std::function<void()> const& callBack);
 
 private:

@@ -24,7 +24,7 @@ QString TaskStateMachine::toString(State state)
 		case (PAUSED): return "Paused";
 		case (STOPPED): return "Stopped";
 		case (COMPLETED): return "Completed";
-		 default: return "Unknown State";
+		default: return "Unknown State";
 	}
 }
 

@@ -22,7 +22,7 @@ ASynchronousTask::~ASynchronousTask()
 void ASynchronousTask::run()
 {
 	job();
-	_condition.wait(&_mutex);
+//	_condition.wait(&_mutex);
 }
 
 void ASynchronousTask::job()
@@ -67,6 +67,17 @@ void ASynchronousTask::job()
 		_state = State::COMPLETED;
 		qInfo() << "Task " << _id << "just completed.";
 	}
+}
+
+State ASynchronousTask::status()
+{
+	State state;
+
+	_mutex.lock();
+	state = _state;
+	_mutex.unlock();
+
+	return state;
 }
 
 void ASynchronousTask::pause()
