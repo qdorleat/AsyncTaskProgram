@@ -5,14 +5,15 @@
 #include "CommandParser.h"
 
 #include <ASynchronousTask.h>
+#include <Definitions.h>
 
-#include <QTextStream>
 #include <QString>
+#include <QTextStream>
 #include <QtConcurrent/QtConcurrent>
 
 #include <iostream>
 
-CommandType CommandParser::toCommandType(const QString& command)
+CommandType CommandParser::parseCommand(const QString& command)
 {
 	if (command.isNull() || command.isEmpty())
 		return CommandType::NONE;
@@ -48,42 +49,105 @@ void CommandParser::listenToTextCommands()
 		if (args.empty())
 			return;
 
-		CommandType commandType = CommandParser::toCommandType(args[0]);
+		CommandType commandType = CommandParser::parseCommand(args[0]);
 
-		QString id = "";
-		if (args.size()>=2)
-			id = args[1];
+		args.takeFirst();
+		int id = parseId(args);
 
-		processCommand(commandType, id);
+		bool areParametersConsistent = checkParamsIntegrity(commandType, id);
+		if (areParametersConsistent)
+		{
+			applyCommand(commandType, id);
+		}
 	}
 }
 
-void CommandParser::processCommand(CommandType command, QString idStr /* = "" */)
+int CommandParser::parseId(QStringList id)
 {
-	if (idStr == "" && (command == PAUSE || command == RESUME || command == STOP))
+	if (id.size() > 1)
 	{
-		qWarning() << "Please provide an ID";
-		return;
+		qWarning() << "Please provide a valid ID";
+		return InvalidID;
 	}
 
-	auto checkId = [](const QString& idStr)
+	if (id.size() == 0)
 	{
-		bool castOk;
-		unsigned int val = idStr.toUInt(&castOk, 10);
-		return castOk ? val : -1;
-	};
-	int id = checkId(idStr);
-
-	if (command != START &&
-		command != STATUS &&
-		id == -1)
-	{
-		qWarning() << "Please provide a correct ID";
-		return;
+		return NoID;
 	}
 
+	bool castOk;
+	unsigned int val = id[0].toUInt(&castOk, 10);
+
+	// Well-formed ID
+	if (castOk)
+	{
+		return val;
+	}
+
+	return InvalidID;
+}
+
+bool CommandParser::checkParamsIntegrity(CommandType command, int id)
+{
 	switch (command)
 	{
+		case START:
+		{
+			switch (id)
+			{
+				case NoID: return true;
+				case InvalidID:
+				default:
+					qWarning() << "Start command takes no ID";
+					return false;
+			}
+		}
+		case PAUSE:
+		case RESUME:
+		case STOP:
+		{
+			switch (id)
+			{
+				case NoID:
+				{
+					qWarning() << "Command takes no ID";
+					return false;
+				}
+				case InvalidID:
+				{
+					qWarning() << "Invalid ID";
+					return false;
+				}
+				default:
+					return true;
+			}
+		}
+		case STATUS:
+		{
+			switch (id)
+			{
+				case InvalidID: {
+					qWarning() << "Invalid ID";
+					return false;
+				}
+				case NoID:
+				default:
+					return true;
+			}
+		}
+		case QUIT:
+			return true;
+	}
+
+	return false;
+}
+
+void CommandParser::applyCommand(CommandType command, int id)
+{
+	switch (command)
+	{
+		case NONE:
+			return;
 		case START:
 			_threadManager.createTask();
 			break;
@@ -106,4 +170,3 @@ void CommandParser::processCommand(CommandType command, QString idStr /* = "" */
 			break;
 	}
 }
-

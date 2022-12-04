@@ -15,15 +15,26 @@ class CommandParser
 {
 public:
 
-	CommandType toCommandType(const QString& command);
-
+	//! Listen to user input commands
 	void listenToTextCommands();
 
-	void processCommand(CommandType command, QString id = "");
+	//! Return the command if it there is a match
+	static CommandType parseCommand(const QString& command);
+
+	/*
+	 * Parses the given string id and returns it as an integer
+	 * Returns InvalidID whether the string id is ill-formed
+	 * Returns NoID if an empty string is provided
+	 */
+	static int parseId(QStringList id);
+
+	//! Returns true if parameters consistency is respected, else false
+	static bool checkParamsIntegrity(CommandType command, int id);
+
+	// Applies the given command and id on the thread pool regardless parameters integrity
+	void applyCommand(CommandType command, int id);
 
 private:
-	static ASynchronousTask* _task;
-
 	ThreadPool _threadManager;
 };
 

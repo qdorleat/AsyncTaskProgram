@@ -3,6 +3,8 @@
 //
 
 #include "ThreadPool.h"
+
+#include "Definitions.h"
 #include "ASynchronousTask.h"
 
 #include <QDebug>
@@ -49,7 +51,7 @@ void ThreadPool::pause(unsigned id)
 void ThreadPool::printStatus(unsigned id)
 {
 	// Print All task
-	if (id == -1)
+	if (id == NoID)
 	{
 		for (auto const id : _async_threads.keys())
 			printStatus(id);
