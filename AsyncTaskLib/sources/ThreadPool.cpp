@@ -60,7 +60,8 @@ void ThreadPool::printStatus(unsigned id)
 	if (_async_threads.contains(id))
 	{
 		qInfo() << "Task: ID " << id
-		        << "Status:" << TaskStateMachine::toString(_async_threads[id]->status());
+		        << "Status:" << TaskStateMachine::toString(_async_threads[id]->status())
+		        << "Progress:" << _async_threads[id]->progress() << "%";
 	}
 	else
 	{

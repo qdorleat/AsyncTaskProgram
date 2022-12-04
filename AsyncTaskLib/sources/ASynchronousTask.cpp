@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QDebug>
 
+#include <cmath>
 #include <iostream>
 
 
@@ -41,7 +42,7 @@ void ASynchronousTask::job()
 	emit stateChanged(_state);
 	_mutex.unlock();
 
-	for (long l = 0 ; l < 100000000 ; ++l)
+	for (int l = 0 ; l < 100000000 ; ++l)
 	{
 		_mutex.lock();
 		if (_state == PAUSED)
@@ -54,11 +55,13 @@ void ASynchronousTask::job()
 			// Leave the loop so as to stop the task
 			break;
 		}
+		_progress = std::roundf((l+1) / 1000000);
 		_mutex.unlock();
 
 		std::string outputNumber = std::to_string(l) + " \n";
 		if(l%100000 == 0)
 			file.write(outputNumber.c_str());
+
 	}
 	file.close();
 
@@ -80,6 +83,17 @@ State ASynchronousTask::status()
 	_mutex.unlock();
 
 	return state;
+}
+
+float ASynchronousTask::progress()
+{
+	float progress;
+
+	_mutex.lock();
+	progress = _progress;
+	_mutex.unlock();
+
+	return progress;
 }
 
 void ASynchronousTask::pause()

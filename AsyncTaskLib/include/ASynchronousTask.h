@@ -22,6 +22,7 @@ public:
 	~ASynchronousTask();
 
 	void pause();
+	float progress();
 	void resume();
 	void stop();
 
@@ -43,6 +44,7 @@ private:
 	QWaitCondition _condition;
 
 	State _state {State::UNINITIALIZED};
+	float _progress {0.0f};
 };
 
 #endif //ASYNCTASKPROGRAM_ASYNCHRONOUSTASK_H
