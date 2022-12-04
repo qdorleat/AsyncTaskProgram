@@ -221,4 +221,5 @@ xcuserdata
 
 .clang-format
 /resources/jobs/job*.txt
+job*.txt
 cmake-build-debug/

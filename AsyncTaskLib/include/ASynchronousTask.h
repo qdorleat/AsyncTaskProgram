@@ -33,6 +33,9 @@ protected:
 	void run() override;
 	void job();
 
+signals:
+	void stateChanged(State newState);
+
 private:
 	const unsigned _id;
 

@@ -38,6 +38,7 @@ void ASynchronousTask::job()
 
 	_mutex.lock();
 	_state = State::RUNNING;
+	emit stateChanged(_state);
 	_mutex.unlock();
 
 	for (long l = 0 ; l < 100000000 ; ++l)
@@ -65,6 +66,7 @@ void ASynchronousTask::job()
 	if (_state == RUNNING)
 	{
 		_state = State::COMPLETED;
+		emit stateChanged(_state);
 		qInfo() << "Task " << _id << "just completed.";
 	}
 }
@@ -86,6 +88,7 @@ void ASynchronousTask::pause()
 	{
 		// Will request the task to pause at next iteration in the job
 		_state = State::PAUSED;
+		emit stateChanged(_state);
 		qInfo() << "Pausing task " << _id;
 	};
 
@@ -99,6 +102,7 @@ void ASynchronousTask::resume()
 	auto actionResume = [&]()
 	{
 		_state = State::RUNNING;
+		emit stateChanged(_state);
 		qInfo() << "Resuming task " << _id;
 		// wake up the task
 		_condition.wakeOne();
@@ -114,6 +118,7 @@ void ASynchronousTask::stop()
 	auto actionStop = [&]()
 	{
 		_state = State::STOPPED;
+		emit stateChanged(_state);
 		qInfo() << "Stopping task " << _id;
 		// wake up the task
 		_condition.wakeOne();

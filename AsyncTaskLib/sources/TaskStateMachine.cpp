@@ -39,6 +39,12 @@ bool TaskStateMachine::isTransitionAllowed(State from, State to)
 
 void TaskStateMachine::transition(State currentState, State desiredState, std::function<void()> const& callBack)
 {
+	if (currentState == desiredState)
+	{
+		qWarning() << "Task is already" << toString(currentState);
+		return;
+	}
+
 	bool stateTransitionPossible = isTransitionAllowed(currentState, desiredState);
 	if (stateTransitionPossible)
 	{
