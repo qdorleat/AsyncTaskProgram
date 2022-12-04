@@ -6,12 +6,23 @@ pause, resume or even stop a task.
 
 ## Build
 
-So as to build the AsyncTaskLib library only, open it and then, create a build directory, run cmake on the target, then make:
+To build the AsyncTaskLib static library only, open it and then, create a build directory, run cmake on the target, then make:
 ```
 mkdir build
 cd build
 cmake ..
 make
+```
+
+## Run the tests
+
+Once you have built the library, in the build directory, you can run the test, by doing
+
+```
+cd tests
+ctest -R unit_ASynchronousTask
+ctest -R unit_StateMachineTest
+ctest -R unit_ThreadPool
 ```
 
 ## Requirements
