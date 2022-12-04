@@ -91,3 +91,19 @@ void ThreadPool::stop(unsigned id)
 		qWarning() << "There is no task with the given ID" << id;
 	}
 }
+
+void ThreadPool::terminateAllTasks()
+{
+	for (auto const task: _async_threads)
+	{
+		State state = task->status();
+		if (state == RUNNING || state == PAUSED)
+		{
+			task->stop();
+			// Gives the time for the task to stop
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+		task->quit();
+		delete task;
+	}
+}

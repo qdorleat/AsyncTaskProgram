@@ -14,8 +14,9 @@ class TaskStateMachine
 public:
 	//! Returns a stringified version of the state
 	static QString toString(State state);
+
 protected:
-	//! Returns true whether the transition is allowd from state 'from' to state 'to'
+	//! Returns true whether the transition is allowed from state 'from' to state 'to'
 	bool isTransitionAllowed(State from, State to);
 	//! Performs the transition if allowed from 'currentState' to 'desiredState' by calling the callback
 	void transition(State currentState, State desiredState, std::function<void()> const& callBack);

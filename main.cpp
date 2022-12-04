@@ -34,5 +34,5 @@ int main(int argc, char* argv[])
 	CommandParser parser;
 	parser.listenToTextCommands();
 
-	return app.exec();
+	return EXIT_SUCCESS;
 }

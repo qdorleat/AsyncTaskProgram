@@ -58,6 +58,10 @@ void CommandParser::listenToTextCommands()
 		if (areParametersConsistent)
 		{
 			applyCommand(commandType, id);
+			if (commandType == QUIT)
+			{
+				return;
+			}
 		}
 	}
 }
@@ -164,7 +168,7 @@ void CommandParser::applyCommand(CommandType command, int id)
 			_threadManager.printStatus(id);
 			break;
 		case QUIT:
-			std::cout << "QUIT something" << std::endl;
+			_threadManager.terminateAllTasks();
 			break;
 		default:
 			break;

@@ -18,6 +18,7 @@ public:
 	void printStatus(unsigned id = -1);
 	void resume(unsigned id);
 	void stop(unsigned id);
+	void terminateAllTasks();
 
 private:
 	// incremental ID for ASynchronousTask objects;
