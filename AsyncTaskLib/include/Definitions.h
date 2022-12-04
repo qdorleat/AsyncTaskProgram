@@ -10,4 +10,10 @@
 constexpr int InvalidID = {std::numeric_limits<int>::max()};
 constexpr int NoID = {std::numeric_limits<int>::max() - 1};
 
+enum class TaskType
+{
+	A = 42,
+	B = 666,
+};
+
 #endif//ASYNCTASKPROGRAM_DEFINITIONS_H

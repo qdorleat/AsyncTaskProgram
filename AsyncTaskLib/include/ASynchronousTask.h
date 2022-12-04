@@ -5,11 +5,13 @@
 #ifndef ASYNCTASKPROGRAM_ASYNCHRONOUSTASK_H
 #define ASYNCTASKPROGRAM_ASYNCHRONOUSTASK_H
 
+#include <QFile>
 #include <QMutex>
 #include <QThread>
 #include <QWaitCondition>
 
 #include "TaskStateMachine.h"
+#include "Definitions.h"
 
 class ASynchronousTask : public QThread,
                          public TaskStateMachine
@@ -19,12 +21,13 @@ public:
 	ASynchronousTask(unsigned id);
 	ASynchronousTask() = delete;
 	ASynchronousTask(const ASynchronousTask& ) = delete;
-	~ASynchronousTask();
+	virtual ~ASynchronousTask();
 
 	void pause();
 	float progress();
 	void resume();
 	void stop();
+	virtual QString type() = 0;
 
 	// Returns the state of the task.
 	// Since the status is protected by a mutex, the getter cannot be const method
@@ -32,10 +35,19 @@ public:
 
 protected:
 	void run() override;
-	void job();
+
+	// Job specification of the task
+	virtual void job() = 0;
 
 signals:
 	void stateChanged(State newState);
+
+private:
+	// Setups task environment
+	bool setup();
+
+protected:
+	QFile _file;
 
 private:
 	const unsigned _id;

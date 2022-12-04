@@ -20,6 +20,8 @@ set(_sources
 
 set(_headers
     include/ASynchronousTask.h
+    include/ASynchronousTaskAlgoA.h
+    include/ASynchronousTaskAlgoB.h
     include/Definitions.h
     include/TaskState.h
     include/TaskStateMachine.h

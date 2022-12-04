@@ -99,11 +99,20 @@ bool CommandParser::checkParamsIntegrity(CommandType command, int id)
 		{
 			switch (id)
 			{
-				case NoID: return true;
+				case NoID:
+					return true;
 				case InvalidID:
-				default:
-					qWarning() << "Start command takes no ID";
+					qWarning() << "Invalid TaskType";
 					return false;
+				default:
+				if (id == static_cast<int>(TaskType::A) ||
+					id == static_cast<int>(TaskType::B))
+					return true;
+				else
+				{
+					qWarning() << "Invalid TaskType";
+					return false;
+				}
 			}
 		}
 		case PAUSE:
@@ -153,7 +162,10 @@ void CommandParser::applyCommand(CommandType command, int id)
 		case NONE:
 			return;
 		case START:
-			_threadManager.createTask();
+			if (id == NoID)
+				_threadManager.createTask();
+			else
+				_threadManager.createTask(static_cast<TaskType>(id));
 			break;
 		case PAUSE:
 			_threadManager.pause(id);

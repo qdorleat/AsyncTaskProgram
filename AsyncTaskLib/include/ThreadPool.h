@@ -5,6 +5,7 @@
 #ifndef ASYNCTASKPROGRAM_THREADPOOL_H
 #define ASYNCTASKPROGRAM_THREADPOOL_H
 
+#include "Definitions.h"
 #include <QMap>
 
 class ASynchronousTask;
@@ -13,7 +14,7 @@ class ThreadPool
 {
 public:
 	bool contains(unsigned id);
-	unsigned createTask();
+	unsigned createTask(TaskType type = TaskType::A);
 	void pause(unsigned id);
 	void printStatus(unsigned id = -1);
 	void resume(unsigned id);
