@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-set(PROJECT_NAME AsyncTaskProgram)
+set(PROJECT_NAME ProgramExample)
 
 project(${PROJECT_NAME}
         LANGUAGES CXX
@@ -15,25 +15,23 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent)
 add_subdirectory(AsyncTaskLib)
 
 set(_sources
-    sources/CommandParser.cpp
+    Example/sources/CommandParser.cpp
 )
 
 set(_headers
-    sources/CommandParser.h
-    sources/CommandType.h
+    Example/sources/CommandParser.h
+    Example/sources/CommandType.h
 )
 
 add_executable(${PROJECT_NAME}
-    main.cpp
+    Example/main.cpp
     ${_sources}
     ${_headers}
 )
 
 target_include_directories(
-        ${PROJECT_NAME} PUBLIC
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${ARG_INCLUDE_DIR}>"	# For build-tree
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>	# For install-tree
-        AsyncTaskLib/include
+    ${PROJECT_NAME} PUBLIC
+    AsyncTaskLib/include
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
@@ -54,4 +52,4 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_subdirectory(tests)
+add_subdirectory(Example/tests)
