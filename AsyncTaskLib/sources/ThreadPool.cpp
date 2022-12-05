@@ -12,6 +12,11 @@
 
 unsigned ThreadPool::ID = 0;
 
+ThreadPool::~ThreadPool()
+{
+	terminateAllTasks();
+}
+
 unsigned ThreadPool::createTask(TaskType type)
 {
 	unsigned idNewAsyncTask = ID;
@@ -61,14 +66,15 @@ void ThreadPool::printStatus(unsigned id)
 	{
 		for (auto const id : _async_threads.keys())
 			printStatus(id);
-			return;
+		return;
 	}
 	if (_async_threads.contains(id))
 	{
-		qInfo() << "Task: ID " << id
-				<< "Type:" << QString::number(static_cast<unsigned int>(_async_threads[id]->type()))
-				<< "Status:" << TaskStateMachine::toString(_async_threads[id]->status())
-				<< "Progress:" << _async_threads[id]->progress() << "%";
+		TaskStatus status = _async_threads[id]->status();
+		qInfo() << "Task: ID " << status.id
+				<< "Type:" << QString::number(static_cast<unsigned>(status.type))
+				<< "Status:" << TaskStateMachine::toString(status.state)
+				<< "Progress:" << status.progress << "%";
 	}
 	else
 	{
@@ -86,6 +92,19 @@ void ThreadPool::resume(unsigned id)
 	{
 		qWarning() << "There is no task with the given ID" << id;
 	}
+}
+
+TaskStatus ThreadPool::status(unsigned id)
+{
+	if (_async_threads.contains(id))
+	{
+		return _async_threads[id]->status();
+	}
+	else
+	{
+		qWarning() << "There is no task with the given ID" << id;
+	}
+	return TaskStatus();
 }
 
 void ThreadPool::stop(unsigned id)

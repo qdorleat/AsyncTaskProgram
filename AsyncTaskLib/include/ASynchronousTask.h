@@ -29,14 +29,16 @@ public:
 	virtual ~ASynchronousTask();
 
 	void pause();
-	float progress();
 	void resume();
 	void stop();
 	virtual TaskType type() = 0;
 
 	// Returns the state of the task.
-	// Since the status is protected by a mutex, the getter cannot be const method
-	State status();
+	// Since the state is protected by a mutex, the getter cannot be const method
+	State state();
+
+	// Returns the task status containing all the task information
+	TaskStatus status();
 
 protected:
 	void run() override;

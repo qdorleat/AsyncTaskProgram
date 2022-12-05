@@ -74,7 +74,7 @@ void ASynchronousTask::run()
 	}
 }
 
-State ASynchronousTask::status()
+State ASynchronousTask::state()
 {
 	State state;
 
@@ -85,15 +85,18 @@ State ASynchronousTask::status()
 	return state;
 }
 
-float ASynchronousTask::progress()
+TaskStatus ASynchronousTask::status()
 {
-	float progress;
+	TaskStatus status;
 
 	_mutex.lock();
-	progress = _progress;
+	status.id = _id;
+	status.type = type();
+	status.state = _state;
+	status.progress = _progress;
 	_mutex.unlock();
 
-	return progress;
+	return status;
 }
 
 void ASynchronousTask::pause()
@@ -142,3 +145,5 @@ void ASynchronousTask::stop()
 	transition(_state, State::STOPPED, actionStop);
 	_mutex.unlock();
 }
+
+

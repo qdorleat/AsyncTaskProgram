@@ -10,15 +10,32 @@
 
 class ASynchronousTask;
 
+/**
+ * Thread pool class represents the API of the library operating commands from the user
+ * It allows to create tasks and their safe manipulation.
+ * It holds ownership on the tasks and is responsible of their destruction
+ * All the function of the ThreadPool class are thread-safe
+ */
 class ThreadPool
 {
 public:
-	bool contains(unsigned id);
+	~ThreadPool();
+
+	//! Creates a task of a given type
 	unsigned createTask(TaskType type = TaskType::A);
+	//! Returns true whether there exists a thread with the given ID
+	bool contains(unsigned id);
+	//! Pauses the task of the given ID if it exists
 	void pause(unsigned id);
-	void printStatus(unsigned id = -1);
+	//! Prints the status of a task of the given ID if it exists or print the status of all task if NoId is provided
+	void printStatus(unsigned id = NoID);
+	//! Resumes the task of the given ID if it exists
 	void resume(unsigned id);
+	//! Returns a structure containing information of the current status of the task
+	TaskStatus status(unsigned id);
+	//! Stops the task of the given ID if it exists
 	void stop(unsigned id);
+	//! Terminate all the task without any waiting condition and clear the tasks map
 	void terminateAllTasks();
 
 private:
